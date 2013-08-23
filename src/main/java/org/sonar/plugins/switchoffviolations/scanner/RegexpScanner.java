@@ -21,6 +21,7 @@
 package org.sonar.plugins.switchoffviolations.scanner;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
@@ -35,6 +36,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class RegexpScanner implements BatchExtension {
@@ -42,7 +44,7 @@ public class RegexpScanner implements BatchExtension {
   private static final Logger LOG = LoggerFactory.getLogger(RegexpScanner.class);
 
   private PatternsInitializer patternsInitializer;
-  private List<java.util.regex.Pattern> allFilePatterns;
+  private Map<java.util.regex.Pattern, Pattern> allFilePatterns;
   private List<DoubleRegexpMatcher> blockMatchers;
 
   // fields to be reset at every new scan
@@ -55,11 +57,11 @@ public class RegexpScanner implements BatchExtension {
     this.patternsInitializer = patternsInitializer;
 
     lineExclusions = Lists.newArrayList();
-    allFilePatterns = Lists.newArrayList();
+    allFilePatterns = Maps.newLinkedHashMap();
     blockMatchers = Lists.newArrayList();
 
     for (Pattern pattern : this.patternsInitializer.getAllFilePatterns()) {
-      allFilePatterns.add(java.util.regex.Pattern.compile(pattern.getAllFileRegexp()));
+      allFilePatterns.put(java.util.regex.Pattern.compile(pattern.getAllFileRegexp()), pattern);
     }
     for (Pattern pattern : this.patternsInitializer.getBlockPatterns()) {
       blockMatchers.add(new DoubleRegexpMatcher(
@@ -90,11 +92,11 @@ public class RegexpScanner implements BatchExtension {
       }
 
       // first check the single regexp patterns that can be used to totally exclude a file
-      for (java.util.regex.Pattern pattern : allFilePatterns) {
-        if (pattern.matcher(line).find()) {
-          patternsInitializer.addPatternToExcludeResource(resource);
+      for (Map.Entry<java.util.regex.Pattern, Pattern> entry : allFilePatterns.entrySet()) {
+        if (entry.getKey().matcher(line).find()) {
+          patternsInitializer.addPatternToExclude(resource, entry.getValue());
           // nothing more to do on this file
-          LOG.debug("- Exclusion pattern '{}': every violation in this file will be ignored.", pattern);
+          LOG.debug("- Exclusion pattern '{}': matched violations in this file will be ignored.", entry.getKey());
           return;
         }
       }

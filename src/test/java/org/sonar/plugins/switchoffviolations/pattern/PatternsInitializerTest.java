@@ -112,7 +112,7 @@ public class PatternsInitializerTest {
   @Test
   public void shouldReturnExtraPatternForResource() {
     org.sonar.api.resources.File file = new org.sonar.api.resources.File("foo");
-    patternsInitializer.addPatternToExcludeResource(file);
+    patternsInitializer.addPatternToExclude(file, new Pattern());
 
     Pattern extraPattern = patternsInitializer.getExtraPattern(file);
     assertThat(extraPattern.matchResource(file)).isTrue();

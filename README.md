@@ -1,5 +1,5 @@
 Sonar Switch Off Violations Plugin
-=========================
+==================================
 
 This is the Sonar Switch Off Violations Plugin
 
@@ -11,3 +11,9 @@ http://jira.codehaus.org/browse/SONARPLUGINS/component/14708
 
 CI builds:
 https://sonarplugins.ci.cloudbees.com/job/switch-off-violations/
+
+
+What’s new in this fork?
+------------------------
+
+* File exclusion pattern was extended by rule key property.

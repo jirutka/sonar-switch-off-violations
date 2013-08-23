@@ -113,7 +113,10 @@ public class PatternsInitializer implements BatchExtension {
     for (String id : StringUtils.split(patternConf, ',')) {
       String propPrefix = Constants.PATTERNS_ALLFILE_KEY + "." + id + ".";
       String allFileRegexp = settings.getString(propPrefix + Constants.FILE_REGEXP);
-      Pattern pattern = new Pattern().setAllFileRegexp(nullToEmpty(allFileRegexp));
+      String ruleKeyPattern = settings.getString(propPrefix + Constants.RULE_KEY);
+      Pattern pattern = new Pattern()
+          .setAllFileRegexp(nullToEmpty(allFileRegexp))
+          .setRulePattern(firstNonNull(ruleKeyPattern, "*"));
       allFilePatterns.add(pattern);
     }
   }
@@ -149,8 +152,8 @@ public class PatternsInitializer implements BatchExtension {
     return file;
   }
 
-  public void addPatternToExcludeResource(Resource<?> resource) {
-    extraPatternByResource.put(resource, new Pattern(resource.getKey(), "*").setCheckLines(false));
+  public void addPatternToExclude(Resource<?> resource, Pattern pattern) {
+    extraPatternByResource.put(resource, new Pattern(resource.getKey(), pattern.getRulePattern(), pattern.getLineRanges()));
   }
 
   public void addPatternToExcludeLines(Resource<?> resource, Set<LineRange> lineRanges) {

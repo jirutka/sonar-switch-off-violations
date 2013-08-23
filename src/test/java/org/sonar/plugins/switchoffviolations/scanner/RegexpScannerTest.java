@@ -85,7 +85,7 @@ public class RegexpScannerTest {
   public void shouldAddPatternToExcludeFile() throws IOException {
     regexpScanner.scan(javaFile, TestUtils.getResource(getClass(), "file-with-single-regexp.txt"), UTF_8);
 
-    verify(patternsInitializer, times(1)).addPatternToExcludeResource(javaFile);
+    verify(patternsInitializer, times(1)).addPatternToExclude(javaFile, allFilePattern);
     verifyNoMoreInteractions(patternsInitializer);
   }
 
@@ -93,7 +93,7 @@ public class RegexpScannerTest {
   public void shouldAddPatternToExcludeFileEvenIfAlsoDoubleRegexps() throws IOException {
     regexpScanner.scan(javaFile, TestUtils.getResource(getClass(), "file-with-single-regexp-and-double-regexp.txt"), UTF_8);
 
-    verify(patternsInitializer, times(1)).addPatternToExcludeResource(javaFile);
+    verify(patternsInitializer, times(1)).addPatternToExclude(javaFile, allFilePattern);
     verifyNoMoreInteractions(patternsInitializer);
   }
 

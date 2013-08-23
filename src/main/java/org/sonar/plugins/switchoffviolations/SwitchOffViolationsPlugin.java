@@ -83,8 +83,8 @@ import java.util.List;
         indicativeSize = SwitchOffViolationsPlugin.LARGE_SIZE)}),
   @Property(
     key = Constants.PATTERNS_ALLFILE_KEY,
-    name = "File exclusion patterns",
-    description = "Patterns used to identify files in which violations are switched off.<br/>" +
+    name = "Regex-based exclusion patterns",
+    description = "Patterns used to identify which violations are switched off.<br/>" +
       "More information on the <a href=\"http://docs.codehaus.org/display/SONAR/Switch+Off+Violations+Plugin\">documentation page of the plugin</a>.<br/>",
     project = true,
     global = true,
@@ -93,6 +93,12 @@ import java.util.List;
         key = Constants.FILE_REGEXP,
         name = "Regular expression",
         description = "If this regular expression is found in a resource, then this resource is ignored.",
+        type = PropertyType.STRING,
+        indicativeSize = SwitchOffViolationsPlugin.LARGE_SIZE),
+      @PropertyField(
+        key = Constants.RULE_KEY,
+        name = "Rule Key Pattern",
+        description = "Pattern used to match rules which should be ignored.",
         type = PropertyType.STRING,
         indicativeSize = SwitchOffViolationsPlugin.LARGE_SIZE)}),
   @Property(

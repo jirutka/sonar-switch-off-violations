@@ -54,6 +54,13 @@ public class Pattern {
     this.lineRanges = lineRanges;
   }
 
+  public Pattern(String resourcePattern, WildcardPattern rulesPattern, Set<LineRange> lineRanges) {
+    this.resourcePattern = WildcardPattern.create(resourcePattern);
+    this.rulePattern = rulesPattern;
+    this.lineRanges = Sets.newLinkedHashSet(lineRanges);
+    this.checkLines = ! lineRanges.isEmpty();
+  }
+
   public WildcardPattern getResourcePattern() {
     return resourcePattern;
   }
@@ -74,6 +81,10 @@ public class Pattern {
     return allFileRegexp;
   }
 
+  public Set<LineRange> getLineRanges() {
+    return lineRanges;
+  }
+
   Pattern addLineRange(int fromLineId, int toLineId) {
     lineRanges.add(new LineRange(fromLineId, toLineId));
     return this;
@@ -86,6 +97,11 @@ public class Pattern {
 
   boolean isCheckLines() {
     return checkLines;
+  }
+
+  Pattern setRulePattern(String rulePattern) {
+    this.rulePattern = WildcardPattern.create(rulePattern);
+    return this;
   }
 
   Pattern setCheckLines(boolean b) {
